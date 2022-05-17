@@ -81,11 +81,19 @@ def nearVolantier(longitude, latitude):
     for x in dal.getAllId():
         vol_latitude = dal.GetVolLat(x)
         vol_longitude = dal.GetVolLong(x)
-        if dal.Get_Distance(longitude, latitude, vol_longitude, vol_latitude) < RANGE*RANGE:
-            volunteer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            volunteer_socket.bind((dal.GetVolIP(x), 600))
-            volunteer_socket.send(("Help$" + latitude + "$" + longitude).encode())
-            volunteer_socket.close()
+        if 0 < dal.Get_Distance(float(longitude), float(latitude), float(vol_longitude), float(vol_latitude)) < RANGE*RANGE:
+            try:
+                volunteer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                print("conecting to " + x)
+                volunteer_socket.connect_ex((dal.GetVolIP(x), 600))
+                print("conected")
+                volunteer_socket.send(("Help$" + latitude + "$" + longitude).encode())
+                print("sent")
+                volunteer_socket.close()
+                print("close")
+            except:
+                print("conection loss")
+                continue
 
         client_socket, client_address = volunteer_socket.accept()
 
@@ -95,65 +103,6 @@ def addCustomer(name, ip, newID, longitude, latitude):
     print(name + " " + ip)
     content = str(newID) + " " + str(name) + " " + str(ip) + " " + str(longitude) + " " + str(latitude) + "\n"
     file.write(content)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
